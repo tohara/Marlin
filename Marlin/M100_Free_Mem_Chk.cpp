@@ -55,6 +55,7 @@ unsigned char* top_of_stack();
 void prt_hex_nibble(unsigned int);
 void prt_hex_byte(unsigned int);
 void prt_hex_word(unsigned int);
+bool code_as_value();
 int how_many_E5s_are_here(unsigned char*);
 
 
