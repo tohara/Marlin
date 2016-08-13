@@ -65,9 +65,10 @@
 #define E1_DIR_PIN         25
 #define E1_ENABLE_PIN      27
 
-#define E2_STEP_PIN        29
-#define E2_DIR_PIN         28
-#define E2_ENABLE_PIN      39
+// E3D BigBox Dual Z
+// #define E2_STEP_PIN        29
+// #define E2_DIR_PIN         28
+// #define E2_ENABLE_PIN      39
 
 #define LED_PIN            13
 
@@ -85,7 +86,7 @@
   #if TEMP_SENSOR_0 == -1
     #define TEMP_0_PIN          6   // ANALOG NUMBERING - connector *K1* on RUMBA thermocouple ADD ON is used
   #elif TEMP_SENSOR_0 == 20           // E3D PT100
-    #define TEMP_0_PIN         10   // ANALOG NUMBERING
+    #define TEMP_0_PIN          10  // ANALOG NUMBERING
   #else
     #define TEMP_0_PIN         15   // ANALOG NUMBERING - default connector for thermistor *T0* on rumba board is used
   #endif
@@ -147,4 +148,3 @@
 #define BTN_ENC            43
 
 #define SERVO0_PIN         5
-
