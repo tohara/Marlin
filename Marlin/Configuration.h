@@ -86,7 +86,7 @@
 // User-specified version info of this build to display in [Pronterface, etc] terminal window during
 // startup. Implementation of an idea by Prof Braino to inform user that any changes made to this
 // build by the user have been successfully uploaded into firmware.
-#define STRING_CONFIG_H_AUTHOR "(none, default config)" // Who made the changes.
+#define STRING_CONFIG_H_AUTHOR "(Tom Haraldseid, BigBox Template Config)" //Modified by BigBoxFirmware Plugin
 #define SHOW_BOOTSCREEN
 #define STRING_SPLASH_LINE1 SHORT_BUILD_VERSION // will be shown during bootup in line 1
 #define STRING_SPLASH_LINE2 WEBSITE_URL         // will be shown during bootup in line 2
@@ -113,7 +113,7 @@
 
 // This determines the communication speed of the printer
 // :[2400,9600,19200,38400,57600,115200,250000]
-#define BAUDRATE 250000
+#define BAUDRATE 115200 //Modified by BigBoxFirmware Plugin
 
 // Enable the Bluetooth serial interface on AT90USB devices
 //#define BLUETOOTH
@@ -121,12 +121,12 @@
 // The following define selects which electronics board you have.
 // Please choose the name from boards.h that matches your setup
 #ifndef MOTHERBOARD
-  #define MOTHERBOARD BOARD_RAMPS_14_EFB
+#define MOTHERBOARD BOARD_RUMBA //Modified by BigBoxFirmware Plugin
 #endif
 
 // Optional custom name for your RepStrap or other custom machine
 // Displayed in the LCD "Ready" message
-//#define CUSTOM_MACHINE_NAME "3D Printer"
+#define CUSTOM_MACHINE_NAME "BigBox" //Modified by BigBoxFirmware Plugin
 
 // Define this to set a unique identifier for this printer, (Used by some programs to differentiate between machines)
 // You can use an online service to generate a random UUID. (eg http://www.uuidgenerator.net/version4)
@@ -134,7 +134,7 @@
 
 // This defines the number of extruders
 // :[1,2,3,4]
-#define EXTRUDERS 1
+#define EXTRUDERS 2 //Modified by BigBoxFirmware Plugin
 
 // For Cyclops or any "multi-extruder" that shares a single nozzle.
 //#define SINGLENOZZLE
@@ -225,11 +225,11 @@
 //#define DUMMY_THERMISTOR_998_VALUE 25
 //#define DUMMY_THERMISTOR_999_VALUE 100
 // :{ '0': "Not used",'1':"100k / 4.7k - EPCOS",'2':"200k / 4.7k - ATC Semitec 204GT-2",'3':"Mendel-parts / 4.7k",'4':"10k !! do not use for a hotend. Bad resolution at high temp. !!",'5':"100K / 4.7k - ATC Semitec 104GT-2 (Used in ParCan & J-Head)",'6':"100k / 4.7k EPCOS - Not as accurate as Table 1",'7':"100k / 4.7k Honeywell 135-104LAG-J01",'8':"100k / 4.7k 0603 SMD Vishay NTCS0603E3104FXT",'9':"100k / 4.7k GE Sensing AL03006-58.2K-97-G1",'10':"100k / 4.7k RS 198-961",'11':"100k / 4.7k beta 3950 1%",'12':"100k / 4.7k 0603 SMD Vishay NTCS0603E3104FXT (calibrated for Makibox hot bed)",'13':"100k Hisens 3950  1% up to 300°C for hotend 'Simple ONE ' & hotend 'All In ONE'",'20':"PT100 (Ultimainboard V2.x)",'51':"100k / 1k - EPCOS",'52':"200k / 1k - ATC Semitec 204GT-2",'55':"100k / 1k - ATC Semitec 104GT-2 (Used in ParCan & J-Head)",'60':"100k Maker's Tool Works Kapton Bed Thermistor beta=3950",'66':"Dyze Design 4.7M High Temperature thermistor",'70':"the 100K thermistor found in the bq Hephestos 2",'71':"100k / 4.7k Honeywell 135-104LAF-J01",'147':"Pt100 / 4.7k",'1047':"Pt1000 / 4.7k",'110':"Pt100 / 1k (non-standard)",'1010':"Pt1000 / 1k (non standard)",'-3':"Thermocouple + MAX31855 (only for sensor 0)",'-2':"Thermocouple + MAX6675 (only for sensor 0)",'-1':"Thermocouple + AD595",'998':"Dummy 1",'999':"Dummy 2" }
-#define TEMP_SENSOR_0 1
-#define TEMP_SENSOR_1 0
+#define TEMP_SENSOR_0 20 //Modified by BigBoxFirmware Plugin
+#define TEMP_SENSOR_1 20 //Modified by BigBoxFirmware Plugin
 #define TEMP_SENSOR_2 0
 #define TEMP_SENSOR_3 0
-#define TEMP_SENSOR_BED 0
+#define TEMP_SENSOR_BED 5 //Modified by BigBoxFirmware Plugin
 
 // This makes temp sensor 1 a redundant sensor for sensor 0. If the temperatures difference between these sensors is to high the print will be aborted.
 //#define TEMP_SENSOR_1_AS_REDUNDANT
@@ -257,8 +257,8 @@
 // When temperature exceeds max temp, your heater will be switched off.
 // This feature exists to protect your hotend from overheating accidentally, but *NOT* from thermistor short/failure!
 // You should use MINTEMP for thermistor short/failure protection.
-#define HEATER_0_MAXTEMP 275
-#define HEATER_1_MAXTEMP 275
+#define HEATER_0_MAXTEMP 320 //Modified by BigBoxFirmware Plugin
+#define HEATER_1_MAXTEMP 320 //Modified by BigBoxFirmware Plugin
 #define HEATER_2_MAXTEMP 275
 #define HEATER_3_MAXTEMP 275
 #define BED_MAXTEMP 150
@@ -286,19 +286,19 @@
 
   // If you are using a pre-configured hotend then you can use one of the value sets by uncommenting it
   // Ultimaker
-  #define  DEFAULT_Kp 22.2
-  #define  DEFAULT_Ki 1.08
-  #define  DEFAULT_Kd 114
+#define DEFAULT_Kp 29.20 //Modified by BigBoxFirmware Plugin
+#define DEFAULT_Ki 04.73 //Modified by BigBoxFirmware Plugin
+#define DEFAULT_Kd 45.33 //Modified by BigBoxFirmware Plugin
 
   // MakerGear
-  //#define  DEFAULT_Kp 7.0
-  //#define  DEFAULT_Ki 0.1
-  //#define  DEFAULT_Kd 12
+#define DEFAULT_Kp 29.20 //Modified by BigBoxFirmware Plugin
+#define DEFAULT_Ki 04.73 //Modified by BigBoxFirmware Plugin
+#define DEFAULT_Kd 45.33 //Modified by BigBoxFirmware Plugin
 
   // Mendel Parts V9 on 12V
-  //#define  DEFAULT_Kp 63.0
-  //#define  DEFAULT_Ki 2.25
-  //#define  DEFAULT_Kd 440
+#define DEFAULT_Kp 29.20 //Modified by BigBoxFirmware Plugin
+#define DEFAULT_Ki 04.73 //Modified by BigBoxFirmware Plugin
+#define DEFAULT_Kd 45.33 //Modified by BigBoxFirmware Plugin
 
 #endif // PIDTEMP
 
@@ -314,7 +314,7 @@
 // If your configuration is significantly different than this and you don't understand the issues involved, you probably
 // shouldn't use bed PID until someone else verifies your hardware works.
 // If this is enabled, find your own PID constants below.
-//#define PIDTEMPBED
+#define PIDTEMPBED  //Modified by BigBoxFirmware Plugin
 
 //#define BED_LIMIT_SWITCHING
 
@@ -332,15 +332,15 @@
 
   //120V 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
   //from FOPDT model - kp=.39 Tp=405 Tdead=66, Tc set to 79.2, aggressive factor of .15 (vs .1, 1, 10)
-  #define  DEFAULT_bedKp 10.00
-  #define  DEFAULT_bedKi .023
-  #define  DEFAULT_bedKd 305.4
+#define DEFAULT_bedKp 336 //Modified by BigBoxFirmware Plugin
+#define DEFAULT_bedKi 61 //Modified by BigBoxFirmware Plugin
+#define DEFAULT_bedKd 462.4 //Modified by BigBoxFirmware Plugin
 
   //120V 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
   //from pidautotune
-  //#define  DEFAULT_bedKp 97.1
-  //#define  DEFAULT_bedKi 1.41
-  //#define  DEFAULT_bedKd 1675.16
+#define DEFAULT_bedKp 336 //Modified by BigBoxFirmware Plugin
+#define DEFAULT_bedKi 61 //Modified by BigBoxFirmware Plugin
+#define DEFAULT_bedKd 462.4 //Modified by BigBoxFirmware Plugin
 
   // FIND YOUR OWN: "M303 E-1 C8 S90" to run autotune on the bed at 90 degreesC for 8 cycles.
 #endif // PIDTEMPBED
@@ -448,7 +448,7 @@
 // For example an inductive probe, or a setup that uses the nozzle to probe.
 // An inductive probe must be deactivated to go below
 // its trigger-point if hardware endstops are active.
-//#define FIX_MOUNTED_PROBE
+#define FIX_MOUNTED_PROBE  //Modified by BigBoxFirmware Plugin
 
 // The BLTouch probe emulates a servo probe.
 //#define BLTOUCH
@@ -465,8 +465,8 @@
 // X and Y offsets must be integers.
 //
 // In the following example the X and Y offsets are both positive:
-// #define X_PROBE_OFFSET_FROM_EXTRUDER 10
-// #define Y_PROBE_OFFSET_FROM_EXTRUDER 10
+#define X_PROBE_OFFSET_FROM_EXTRUDER 0 //Modified by BigBoxFirmware Plugin
+#define Y_PROBE_OFFSET_FROM_EXTRUDER 32 //Modified by BigBoxFirmware Plugin
 //
 //    +-- BACK ---+
 //    |           |
@@ -478,18 +478,18 @@
 //    |           |
 //    O-- FRONT --+
 //  (0,0)
-#define X_PROBE_OFFSET_FROM_EXTRUDER 10  // X offset: -left  +right  [of the nozzle]
-#define Y_PROBE_OFFSET_FROM_EXTRUDER 10  // Y offset: -front +behind [the nozzle]
-#define Z_PROBE_OFFSET_FROM_EXTRUDER 0   // Z offset: -below +above  [the nozzle]
+#define X_PROBE_OFFSET_FROM_EXTRUDER 0 //Modified by BigBoxFirmware Plugin
+#define Y_PROBE_OFFSET_FROM_EXTRUDER 32 //Modified by BigBoxFirmware Plugin
+#define Z_PROBE_OFFSET_FROM_EXTRUDER -1 //Modified by BigBoxFirmware Plugin
 
 // X and Y axis travel speed (mm/m) between probes
-#define XY_PROBE_SPEED 8000
+#define XY_PROBE_SPEED 3000 //Modified by BigBoxFirmware Plugin
 // Speed for the first approach when double-probing (with PROBE_DOUBLE_TOUCH)
 #define Z_PROBE_SPEED_FAST HOMING_FEEDRATE_Z
 // Speed for the "accurate" probe of each point
 #define Z_PROBE_SPEED_SLOW (Z_PROBE_SPEED_FAST / 2)
 // Use double touch for probing
-//#define PROBE_DOUBLE_TOUCH
+#define PROBE_DOUBLE_TOUCH  //Modified by BigBoxFirmware Plugin
 
 //
 // Allen Key Probe is defined in the Delta example configurations.
@@ -546,8 +546,8 @@
 // Minimum heights for the probe to deploy/stow and travel.
 // These values specify the distance from the NOZZLE to the BED.
 //
-#define Z_PROBE_DEPLOY_HEIGHT 15 // Z position for the probe to deploy/stow
-#define Z_PROBE_TRAVEL_HEIGHT  5 // Z position for travel between points
+#define Z_PROBE_DEPLOY_HEIGHT 3 //Modified by BigBoxFirmware Plugin
+#define Z_PROBE_TRAVEL_HEIGHT 3 //Modified by BigBoxFirmware Plugin
 
 //
 // For M851 give a range for adjusting the Z probe offset
@@ -578,21 +578,21 @@
 // @section machine
 
 // Invert the stepper direction. Change (or reverse the motor connector) if an axis goes the wrong way.
-#define INVERT_X_DIR false
-#define INVERT_Y_DIR true
-#define INVERT_Z_DIR false
+#define INVERT_X_DIR false //Modified by BigBoxFirmware Plugin
+#define INVERT_Y_DIR true //Modified by BigBoxFirmware Plugin
+#define INVERT_Z_DIR true //Modified by BigBoxFirmware Plugin
 
 // @section extruder
 
 // For direct drive extruder v9 set to true, for geared extruder set to false.
-#define INVERT_E0_DIR false
-#define INVERT_E1_DIR false
+#define INVERT_E0_DIR false //Modified by BigBoxFirmware Plugin
+#define INVERT_E1_DIR true //Modified by BigBoxFirmware Plugin
 #define INVERT_E2_DIR false
 #define INVERT_E3_DIR false
 
 // @section homing
 
-//#define Z_HOMING_HEIGHT 4  // (in mm) Minimal z height before homing (G28) for Z clearance above the bed, clamps, ...
+#define Z_HOMING_HEIGHT 3 //Modified by BigBoxFirmware Plugin
                              // Be sure you have this distance over your Z_MAX_POS in case.
 
 // ENDSTOP SETTINGS:
@@ -608,12 +608,12 @@
 // @section machine
 
 // Travel limits after homing (units are in mm)
-#define X_MIN_POS 0
+#define X_MIN_POS 0 //Modified by BigBoxFirmware Plugin
 #define Y_MIN_POS 0
 #define Z_MIN_POS 0
-#define X_MAX_POS 200
-#define Y_MAX_POS 200
-#define Z_MAX_POS 200
+#define X_MAX_POS 260 //Modified by BigBoxFirmware Plugin
+#define Y_MAX_POS 240 //Modified by BigBoxFirmware Plugin
+#define Z_MAX_POS 300 //Modified by BigBoxFirmware Plugin
 
 //===========================================================================
 //========================= Filament Runout Sensor ==========================
@@ -632,17 +632,17 @@
 //============================ Mesh Bed Leveling ============================
 //===========================================================================
 
-//#define MESH_BED_LEVELING    // Enable mesh bed leveling.
+#define MESH_BED_LEVELING  //Modified by BigBoxFirmware Plugin
 
 #if ENABLED(MESH_BED_LEVELING)
-  #define MESH_INSET 10        // Mesh inset margin on print area
+#define MESH_INSET 5 //Modified by BigBoxFirmware Plugin
   #define MESH_NUM_X_POINTS 3  // Don't use more than 7 points per axis, implementation limited.
   #define MESH_NUM_Y_POINTS 3
-  #define MESH_HOME_SEARCH_Z 4  // Z after Home, bed somewhere below but above 0.0.
+#define MESH_HOME_SEARCH_Z 5 //Modified by BigBoxFirmware Plugin
 
   //#define MESH_G28_REST_ORIGIN // After homing all axes ('G28' or 'G28 XYZ') rest at origin [0,0,0]
 
-  //#define MANUAL_BED_LEVELING  // Add display menu option for bed leveling.
+#define MANUAL_BED_LEVELING  //Modified by BigBoxFirmware Plugin
 
   #if ENABLED(MANUAL_BED_LEVELING)
     #define MBL_Z_STEP 0.025  // Step size while manually probing Z axis.
@@ -682,10 +682,10 @@
 
   #if ENABLED(AUTO_BED_LEVELING_GRID)
 
-    #define LEFT_PROBE_BED_POSITION 15
-    #define RIGHT_PROBE_BED_POSITION 170
-    #define FRONT_PROBE_BED_POSITION 20
-    #define BACK_PROBE_BED_POSITION 170
+#define LEFT_PROBE_BED_POSITION 10 //Modified by BigBoxFirmware Plugin
+#define RIGHT_PROBE_BED_POSITION 250 //Modified by BigBoxFirmware Plugin
+#define FRONT_PROBE_BED_POSITION 35 //Modified by BigBoxFirmware Plugin
+#define BACK_PROBE_BED_POSITION 185 //Modified by BigBoxFirmware Plugin
 
     #define MIN_PROBE_EDGE 10 // The Z probe minimum square sides can be no smaller than this.
 
@@ -722,7 +722,7 @@
 
 // Manually set the home position. Leave these undefined for automatic settings.
 // For DELTA this is the top-center of the Cartesian print volume.
-//#define MANUAL_X_HOME_POS 0
+#define MANUAL_X_HOME_POS 0 //Modified by BigBoxFirmware Plugin
 //#define MANUAL_Y_HOME_POS 0
 //#define MANUAL_Z_HOME_POS 0 // Distance between the nozzle to printbed after homing
 
@@ -734,16 +734,16 @@
 // - If stepper drivers time out, it will need X and Y homing again before Z homing.
 // - Move the Z probe (or nozzle) to a defined XY point before Z Homing when homing all axes (G28).
 // - Prevent Z homing when the Z probe is outside bed area.
-//#define Z_SAFE_HOMING
+//#define Z_SAFE_HOMING  //Modified by BigBoxFirmware Plugin
 
 #if ENABLED(Z_SAFE_HOMING)
-  #define Z_SAFE_HOMING_X_POINT ((X_MIN_POS + X_MAX_POS) / 2)    // X point for Z homing when homing all axis (G28).
-  #define Z_SAFE_HOMING_Y_POINT ((Y_MIN_POS + Y_MAX_POS) / 2)    // Y point for Z homing when homing all axis (G28).
+#define Z_SAFE_HOMING_X_POINT (150) //Modified by BigBoxFirmware Plugin
+#define Z_SAFE_HOMING_Y_POINT (100) //Modified by BigBoxFirmware Plugin
 #endif
 
 // Homing speeds (mm/m)
 #define HOMING_FEEDRATE_XY (50*60)
-#define HOMING_FEEDRATE_Z  (4*60)
+#define HOMING_FEEDRATE_Z (6*60) //Modified by BigBoxFirmware Plugin
 
 //
 // MOVEMENT SETTINGS
@@ -752,16 +752,16 @@
 
 // default settings
 
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {80,80,4000,500}  // default steps per unit for Ultimaker
-#define DEFAULT_MAX_FEEDRATE          {300, 300, 5, 25}    // (mm/sec)
-#define DEFAULT_MAX_ACCELERATION      {3000,3000,100,10000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for Skeinforge 40+, for older versions raise them a lot.
+#define DEFAULT_AXIS_STEPS_PER_UNIT {160,90,1600,304} //Modified by BigBoxFirmware Plugin
+#define DEFAULT_MAX_FEEDRATE {150, 150, 6, 50} //Modified by BigBoxFirmware Plugin
+#define DEFAULT_MAX_ACCELERATION {1000,1000,100,10000} //Modified by BigBoxFirmware Plugin
 
-#define DEFAULT_ACCELERATION          3000    // X, Y, Z and E acceleration in mm/s^2 for printing moves
-#define DEFAULT_RETRACT_ACCELERATION  3000    // E acceleration in mm/s^2 for retracts
-#define DEFAULT_TRAVEL_ACCELERATION   3000    // X, Y, Z acceleration in mm/s^2 for travel (non printing) moves
+#define DEFAULT_ACCELERATION 1000 //Modified by BigBoxFirmware Plugin
+#define DEFAULT_RETRACT_ACCELERATION 5000 //Modified by BigBoxFirmware Plugin
+#define DEFAULT_TRAVEL_ACCELERATION 1000 //Modified by BigBoxFirmware Plugin
 
 // The speed change that does not require acceleration (i.e. the software might assume it can be done instantaneously)
-#define DEFAULT_XYJERK                20.0    // (mm/sec)
+#define DEFAULT_XYJERK 8.0 //Modified by BigBoxFirmware Plugin
 #define DEFAULT_ZJERK                 0.4     // (mm/sec)
 #define DEFAULT_EJERK                 5.0    // (mm/sec)
 
@@ -780,7 +780,7 @@
 // M501 - reads parameters from EEPROM (if you need reset them after you changed them temporarily).
 // M502 - reverts to the default "factory settings".  You still need to store them in EEPROM afterwards if you want to.
 //define this to enable EEPROM support
-//#define EEPROM_SETTINGS
+#define EEPROM_SETTINGS  //Modified by BigBoxFirmware Plugin
 
 #if ENABLED(EEPROM_SETTINGS)
   // To disable EEPROM Serial responses and decrease program space by ~1700 byte: comment this out:
@@ -814,12 +814,12 @@
 // @section temperature
 
 // Preheat Constants
-#define PREHEAT_1_TEMP_HOTEND 180
-#define PREHEAT_1_TEMP_BED     70
+#define PREHEAT_1_TEMP_HOTEND 220 //Modified by BigBoxFirmware Plugin
+#define PREHEAT_1_TEMP_BED 60 //Modified by BigBoxFirmware Plugin
 #define PREHEAT_1_FAN_SPEED     0 // Value from 0 to 255
 
 #define PREHEAT_2_TEMP_HOTEND 240
-#define PREHEAT_2_TEMP_BED    110
+#define PREHEAT_2_TEMP_BED 120 //Modified by BigBoxFirmware Plugin
 #define PREHEAT_2_FAN_SPEED     0 // Value from 0 to 255
 
 //
@@ -975,8 +975,8 @@
 // IMPORTANT NOTE: The U8glib library is required for Full Graphic Display!
 //                 https://github.com/olikraus/U8glib_Arduino
 //
-//#define ULTRA_LCD   // Character based
-//#define DOGLCD      // Full graphics display
+#define ULTRA_LCD  //Modified by BigBoxFirmware Plugin
+#define DOGLCD  //Modified by BigBoxFirmware Plugin
 
 //
 // SD CARD
@@ -984,7 +984,7 @@
 // SD Card support is disabled by default. If your controller has an SD slot,
 // you must uncomment the following option or it won't work.
 //
-//#define SDSUPPORT
+#define SDSUPPORT  //Modified by BigBoxFirmware Plugin
 
 //
 // SD CARD: SPI SPEED
@@ -1009,13 +1009,13 @@
 // This option overrides the default number of encoder pulses needed to
 // produce one step. Should be increased for high-resolution encoders.
 //
-//#define ENCODER_PULSES_PER_STEP 1
+#define ENCODER_PULSES_PER_STEP 4 //Modified by BigBoxFirmware Plugin
 
 //
 // Use this option to override the number of step signals required to
 // move between next/prev menu items.
 //
-//#define ENCODER_STEPS_PER_MENU_ITEM 5
+#define ENCODER_STEPS_PER_MENU_ITEM 1 //Modified by BigBoxFirmware Plugin
 
 /**
  * Encoder Direction Options
@@ -1032,7 +1032,7 @@
 //
 //  Set this option if CLOCKWISE causes values to DECREASE
 //
-//#define REVERSE_ENCODER_DIRECTION
+#define REVERSE_ENCODER_DIRECTION  //Modified by BigBoxFirmware Plugin
 
 //
 // This option reverses the encoder direction for navigating LCD menus.
@@ -1040,7 +1040,7 @@
 //  If CLOCKWISE normally moves DOWN this makes it go UP.
 //  If CLOCKWISE normally moves UP this makes it go DOWN.
 //
-//#define REVERSE_MENU_DIRECTION
+//#define REVERSE_MENU_DIRECTION  //Modified by BigBoxFirmware Plugin
 
 //
 // Individual Axis Homing
@@ -1064,8 +1064,8 @@
 // Note: Test audio output with the G-Code:
 //  M300 S<frequency Hz> P<duration ms>
 //
-//#define LCD_FEEDBACK_FREQUENCY_DURATION_MS 100
-//#define LCD_FEEDBACK_FREQUENCY_HZ 1000
+#define LCD_FEEDBACK_FREQUENCY_DURATION_MS 2 //Modified by BigBoxFirmware Plugin
+#define LCD_FEEDBACK_FREQUENCY_HZ 100 //Modified by BigBoxFirmware Plugin
 
 //
 // CONTROLLER TYPE: Standard
@@ -1142,7 +1142,7 @@
 // RepRapDiscount FULL GRAPHIC Smart Controller
 // http://reprap.org/wiki/RepRapDiscount_Full_Graphic_Smart_Controller
 //
-//#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
+#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER  //Modified by BigBoxFirmware Plugin
 
 //
 // MakerLab Mini Panel with graphic
@@ -1247,7 +1247,7 @@
 // Use software PWM to drive the fan, as for the heaters. This uses a very low frequency
 // which is not as annoying as with the hardware PWM. On the other hand, if this frequency
 // is too low, you should also increment SOFT_PWM_SCALE.
-//#define FAN_SOFT_PWM
+#define FAN_SOFT_PWM  //Modified by BigBoxFirmware Plugin
 
 // Incrementing this by 1 will double the software PWM frequency,
 // affecting heaters, and the fan if FAN_SOFT_PWM is enabled.

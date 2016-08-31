@@ -46,17 +46,7 @@ SET(LIBS
 			wiring_shift.c
 			WInterrupts.c
 			hooks.c
-			u8g_font.c
-			u8g_delay.c
-			u8g_pb32h1.c
-			u8g_ll_api.c
-			u8g_rect.c
-			u8g_bitmap.c
-			u8g_com_null.c
-			u8g_clip.c
-			u8g_page.c
-			u8g_pb.c
-			u8g_state.c
+
 			SPI.cpp
 			WMath.cpp
 			WString.cpp
@@ -64,8 +54,9 @@ SET(LIBS
 			main.cpp
 			Tone.cpp
 			
-			
 )	
+
+file(GLOB U8GLIB ${ARDUINO_PATH}/libraries/U8glib/utility/*.c)
 
 include_directories(${LIBDIR})
 LINK_DIRECTORIES(${LIBDIR})
@@ -79,4 +70,5 @@ foreach(DIR ${LIBDIR})
 endforeach()
 
 add_library(arduinocore ${SRC})
+add_library(U8glib ${U8GLIB})
 
