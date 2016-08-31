@@ -1,10 +1,32 @@
+#=============================================================================#
+# Author: QueezyTheGreat                                                      #
+# Date:   26.04.2011                                                          #
+#                                                                             #
+# Description: Arduino CMake example                                          #
+#                                                                             #
+#=============================================================================#
 
-cmake_minimum_required(VERSION 2.6)
+# this line is needed only if you use boards with selectable cpu (like mega, pro etc)
+# and this line should go before call to "cmake/ArduinoToolchain.cmake"
+# this is durty hack and should be fixed somewhen, because it should go to 
+# particular cmake subdirectory
+set(ARDUINO_CPU atmega2560)
+
+set(CMAKE_TOOLCHAIN_FILE cmake/ArduinoToolchain.cmake) # Arduino Toolchain
 
 
-Project(Marlin)
+cmake_minimum_required(VERSION 2.8)
+#====================================================================#
+#  Setup Project                                                     #
+#====================================================================#
+project(Marlin C CXX)
+
+print_board_list()
+print_programmer_list()
+
+# add libraries to project
+link_directories(${ARDUINO_SDK_PATH}/libraries)
 
 
-
+# add the project directory into build
 add_subdirectory(Marlin)
-
