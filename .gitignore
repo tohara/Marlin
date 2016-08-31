@@ -116,3 +116,4 @@ applet/
 *.su
 
 .project
+/build/
