@@ -12,7 +12,13 @@
 # particular cmake subdirectory
 set(ARDUINO_CPU atmega2560)
 
+#set(ARDUINO_SDK_PATH /home/tom/arduino-1.6.8)
+
+include(${CMAKE_CURRENT_LIST_DIR}/cmake/Arduino_SDK.cmake)
 set(CMAKE_TOOLCHAIN_FILE cmake/ArduinoToolchain.cmake) # Arduino Toolchain
+
+#MESSAGE(${Marlin_SOURCE_DIR}/cmake/ArduinoToolchain.cmake)
+#include(${CMAKE_CURRENT_LIST_DIR}/cmake/ArduinoToolchain.cmake)
 
 
 cmake_minimum_required(VERSION 2.8)
