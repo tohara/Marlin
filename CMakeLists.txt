@@ -1,10 +1,3 @@
-#=============================================================================#
-# Author: QueezyTheGreat                                                      #
-# Date:   26.04.2011                                                          #
-#                                                                             #
-# Description: Arduino CMake example                                          #
-#                                                                             #
-#=============================================================================#
 
 # this line is needed only if you use boards with selectable cpu (like mega, pro etc)
 # and this line should go before call to "cmake/ArduinoToolchain.cmake"
@@ -12,7 +5,7 @@
 # particular cmake subdirectory
 set(ARDUINO_CPU atmega2560)
 
-#set(ARDUINO_SDK_PATH /home/tom/arduino-1.6.8)
+set(ARDUINO_SDK_PATH ${CMAKE_CURRENT_LIST_DIR}/arduino-1.6.8)
 
 include(${CMAKE_CURRENT_LIST_DIR}/cmake/Arduino_SDK.cmake)
 set(CMAKE_TOOLCHAIN_FILE cmake/ArduinoToolchain.cmake) # Arduino Toolchain
@@ -31,7 +24,7 @@ print_board_list()
 print_programmer_list()
 
 # add libraries to project
-link_directories(${ARDUINO_SDK_PATH}/libraries)
+#link_directories(${ARDUINO_SDK_PATH}/libraries)
 
 
 # add the project directory into build

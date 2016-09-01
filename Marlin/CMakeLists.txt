@@ -14,6 +14,6 @@ set(${PROJECT_NAME}_SRCS ${SOURCES})
 set(${PROJECT_NAME}_PORT COM6)
 
 
-
 # Command to generate code arduino firmware (.hex file)
 generate_arduino_firmware(${PROJECT_NAME})
+

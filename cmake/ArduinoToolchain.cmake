@@ -20,7 +20,7 @@ endif()
 #                         System Paths                                        #
 #=============================================================================#
 if(UNIX)
-    include(Platform/Arduino)
+    include(Platform/UnixPaths)
     if(APPLE)
         list(APPEND CMAKE_SYSTEM_PREFIX_PATH ~/Applications
                                              /Applications
