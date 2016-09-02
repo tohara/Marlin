@@ -9,6 +9,7 @@ set(${PROJECT_NAME}_BOARD mega)
 # Define the source code
 file(GLOB SOURCES "*.cpp")
 set(${PROJECT_NAME}_SRCS ${SOURCES})
+#set(${PROJECT_NAME}_HDRS Configuration.h)
 
 # Define the port for uploading code to the Arduino
 set(${PROJECT_NAME}_PORT COM6)
@@ -16,4 +17,3 @@ set(${PROJECT_NAME}_PORT COM6)
 
 # Command to generate code arduino firmware (.hex file)
 generate_arduino_firmware(${PROJECT_NAME})
-
