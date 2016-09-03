@@ -38,7 +38,61 @@ function(read_define_value_from_header PATH VARIABLE)
   
 endfunction()
 
+function(LOAD_SETTINGS SETTINGS_PATH)
+
+    if(EXISTS ${SETTINGS_PATH})
+        file(STRINGS ${SETTINGS_PATH} FILE_ENTRIES)  # Settings file split into lines
+    
+        foreach(FILE_ENTRY ${FILE_ENTRIES})
+            if("${FILE_ENTRY}" MATCHES "^[^#]+=.*")
+                string(REGEX MATCH "^[^=]+" SETTING_NAME  ${FILE_ENTRY})
+                string(REGEX MATCH "[^=]+$" SETTING_VALUE ${FILE_ENTRY})
+                string(REPLACE "." ";" ENTRY_NAME_TOKENS ${SETTING_NAME})
+                string(STRIP "${SETTING_VALUE}" SETTING_VALUE)
+    
+                list(LENGTH ENTRY_NAME_TOKENS ENTRY_NAME_TOKENS_LEN)
+              
+	            # Add entry to settings list if it does not exist
+	            list(GET ENTRY_NAME_TOKENS 0 ENTRY_NAME)
+	            
+    
+    	
+                # Add entry setting to entry settings list if it does not exist
+                set(ENTRY_SETTING_LIST ${ENTRY_NAME}.SETTINGS)
+                list(GET ENTRY_NAME_TOKENS 1 ENTRY_SETTING)
+                
+    	        set(PARAMETERS 2)
+    	    
+    		    list(FIND ${ENTRY_SETTING_LIST} ${ENTRY_SETTING} ENTRY_SETTING_INDEX)
+    		    if(ENTRY_SETTING_INDEX LESS 0)
+    		        # Add setting to entry
+    		        list(APPEND ${ENTRY_SETTING_LIST} ${ENTRY_SETTING})
+    		        set(${ENTRY_SETTING_LIST} ${${ENTRY_SETTING_LIST}}
+    		            CACHE INTERNAL "Marlin board settings")
+    		    endif()
+        	    
+        	    set(FULL_SETTING_NAME ${ENTRY_NAME}.${ENTRY_SETTING})
+        	    
+                # Save setting value
+                set(${FULL_SETTING_NAME} ${SETTING_VALUE}
+                    CACHE INTERNAL "Marlin board settings")
+                    
+            endif()
+        endforeach()
+    endif()
+endfunction()
+
 function(get_motherboard SRCPATH)
 	read_define_value_from_header(${SRCPATH}/Configuration.h MOTHERBOARD)
+	set(MOTHERBOARD_FOUND ${MOTHERBOARD_FOUND} PARENT_SCOPE)
+  	set(MOTHERBOARD ${MOTHERBOARD_VALUE} PARENT_SCOPE)
+endfunction()
+
+function(setup_motherboard TARGET SRCPATH)
+    load_settings(${CMAKE_SOURCE_DIR}/cmake/marlin_boards.txt)
+    get_motherboard(${SRCPATH})
+    set(${TARGET}_BOARD ${${MOTHERBOARD}.board} PARENT_SCOPE)
+    set(${TARGET}_CPU ${${MOTHERBOARD}.mcu} PARENT_SCOPE)
+  
 endfunction()
 

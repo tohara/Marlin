@@ -1,6 +1,7 @@
 #=============================================================================#
 # generate_arduino_firmware(name
 #      [BOARD board_id]
+#	   [CPU cpu_id]
 #      [SKETCH sketch_path |
 #       SRCS  src1 src2 ... srcN]
 #      [HDRS  hdr1 hdr2 ... hdrN]
@@ -19,7 +20,8 @@
 # The arguments are as follows:
 #
 #      name           # The name of the firmware target         [REQUIRED]
-#      BOARD          # Board name (such as uno, mega2560, ...) [REQUIRED]
+#      BOARD          # Board name (such as uno, mega, ...) [REQUIRED]
+#      CPU            # Cpu name (such as atmega2560, ...)
 #      SKETCH         # Arduino sketch [must have SRCS or SKETCH]
 #      SRCS           # Sources        [must have SRCS or SKETCH]
 #      HDRS           # Headers 
@@ -454,7 +456,7 @@ endfunction()
 function(GENERATE_ARDUINO_FIRMWARE INPUT_NAME)
     message(STATUS "Generating ${INPUT_NAME}")
     parse_generator_arguments(${INPUT_NAME} INPUT
-                              "NO_AUTOLIBS;MANUAL"                  # Options
+                              "CPU;NO_AUTOLIBS;MANUAL"                  # Options
                               "BOARD;PORT;SKETCH;PROGRAMMER"        # One Value Keywords
                               "SERIAL;SRCS;HDRS;LIBS;ARDLIBS;AFLAGS"  # Multi Value Keywords
                               ${ARGN})
@@ -464,6 +466,9 @@ function(GENERATE_ARDUINO_FIRMWARE INPUT_NAME)
     endif()
     if(NOT INPUT_PORT)
         set(INPUT_PORT ${ARDUINO_DEFAULT_PORT})
+    endif()
+    if(INPUT_CPU)
+    	set(ARDUINO_CPUMENU ".menu.cpu.${INPUT_CPU}")
     endif()
     if(NOT INPUT_SERIAL)
         set(INPUT_SERIAL ${ARDUINO_DEFAULT_SERIAL})
