@@ -31,6 +31,11 @@ project(Marlin C CXX)
 #register_hardware_platform(/home/tom/test/Sanguino)
 
 #====================================================================#
+#  Register non standard arduino libraries                                    #
+#====================================================================#
+#register_hardware_platform(/home/tom/test/Sanguino)
+
+#====================================================================#
 #  Print any info                                                    #
 #  print_board_list()                                                #
 #  print_programmer_list()                                           #
