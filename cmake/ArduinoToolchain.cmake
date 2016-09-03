@@ -31,5 +31,3 @@ if(UNIX)
 elseif(WIN32)
     include(Platform/WindowsPaths)
 endif()
-
-

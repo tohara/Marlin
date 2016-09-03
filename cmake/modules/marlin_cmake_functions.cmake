@@ -89,7 +89,7 @@ function(get_motherboard SRCPATH)
 endfunction()
 
 function(setup_motherboard TARGET SRCPATH)
-    load_settings(${CMAKE_SOURCE_DIR}/cmake/marlin_boards.txt)
+    load_settings(${CMAKE_SOURCE_DIR}/cmake/settings/marlin_boards.txt)
     get_motherboard(${SRCPATH})
     set(${TARGET}_BOARD ${${MOTHERBOARD}.board} PARENT_SCOPE)
     set(${TARGET}_CPU ${${MOTHERBOARD}.mcu} PARENT_SCOPE)
