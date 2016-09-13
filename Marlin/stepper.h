@@ -91,6 +91,11 @@ class Stepper {
       static bool performing_homing;
     #endif
 
+    //
+    // Positions of stepper motors, in step units
+    //
+    static volatile long count_position[NUM_AXIS];
+
   private:
 
     static unsigned char last_direction_bits;        // The next stepping-bits to be output
@@ -102,7 +107,7 @@ class Stepper {
 
     // Counter variables for the Bresenham line tracer
     static long counter_X, counter_Y, counter_Z, counter_E;
-    static volatile unsigned long step_events_completed; // The number of step events executed in the current block
+    static volatile uint32_t step_events_completed; // The number of step events executed in the current block
 
     #if ENABLED(ADVANCE) || ENABLED(LIN_ADVANCE)
       static unsigned char old_OCR0A;
@@ -139,11 +144,6 @@ class Stepper {
     #endif
 
     //
-    // Positions of stepper motors, in step units
-    //
-    static volatile long count_position[NUM_AXIS];
-
-    //
     // Current direction of stepper motors (+1 or -1)
     //
     static volatile signed char count_direction[NUM_AXIS];
@@ -152,7 +152,7 @@ class Stepper {
     // Mixing extruder mix counters
     //
     #if ENABLED(MIXING_EXTRUDER)
-      static long counter_M[MIXING_STEPPERS];
+      static long counter_m[MIXING_STEPPERS];
       #define MIXING_STEPPERS_LOOP(VAR) \
         for (uint8_t VAR = 0; VAR < MIXING_STEPPERS; VAR++) \
           if (current_block->mix_event_count[VAR])
@@ -210,6 +210,13 @@ class Stepper {
     // Get the position (mm) of an axis based on stepper position(s)
     //
     static float get_axis_position_mm(AxisEnum axis);
+
+    //
+    // SCARA AB axes are in degrees, not mm
+    //
+    #if IS_SCARA
+      static FORCE_INLINE float get_axis_position_degrees(AxisEnum axis) { return get_axis_position_mm(axis); }
+    #endif
 
     //
     // The stepper subsystem goes to sleep when it runs out of things to execute. Call this

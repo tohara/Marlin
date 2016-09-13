@@ -98,7 +98,7 @@ float Planner::min_feedrate_mm_s,
       Planner::max_e_jerk,
       Planner::min_travel_feedrate_mm_s;
 
-#if ENABLED(AUTO_BED_LEVELING_FEATURE)
+#if ENABLED(AUTO_BED_LEVELING_LINEAR)
   matrix_3x3 Planner::bed_level_matrix; // Transform to compensate for bed level
 #endif
 
@@ -138,7 +138,7 @@ void Planner::init() {
   memset(position, 0, sizeof(position)); // clear position
   LOOP_XYZE(i) previous_speed[i] = 0.0;
   previous_nominal_speed = 0.0;
-  #if ENABLED(AUTO_BED_LEVELING_FEATURE)
+  #if ENABLED(AUTO_BED_LEVELING_LINEAR)
     bed_level_matrix.set_to_identity();
   #endif
 }
@@ -203,9 +203,8 @@ void Planner::calculate_trapezoid_for_block(block_t* block, float entry_factor, 
 
 
 // The kernel called by recalculate() when scanning the plan from last to first entry.
-void Planner::reverse_pass_kernel(block_t* previous, block_t* current, block_t* next) {
+void Planner::reverse_pass_kernel(block_t* current, block_t* next) {
   if (!current) return;
-  UNUSED(previous);
 
   if (next) {
     // If entry speed is already at the maximum entry speed, no need to recheck. Block is cruising.
@@ -250,15 +249,14 @@ void Planner::reverse_pass() {
       block[2] = block[1];
       block[1] = block[0];
       block[0] = &block_buffer[b];
-      reverse_pass_kernel(block[0], block[1], block[2]);
+      reverse_pass_kernel(block[1], block[2]);
     }
   }
 }
 
 // The kernel called by recalculate() when scanning the plan from first to last entry.
-void Planner::forward_pass_kernel(block_t* previous, block_t* current, block_t* next) {
+void Planner::forward_pass_kernel(block_t* previous, block_t* current) {
   if (!previous) return;
-  UNUSED(next);
 
   // If the previous block is an acceleration block, but it is not long enough to complete the
   // full speed change within the block, we need to adjust the entry speed accordingly. Entry
@@ -288,9 +286,9 @@ void Planner::forward_pass() {
     block[0] = block[1];
     block[1] = block[2];
     block[2] = &block_buffer[b];
-    forward_pass_kernel(block[0], block[1], block[2]);
+    forward_pass_kernel(block[0], block[1]);
   }
-  forward_pass_kernel(block[1], block[2], NULL);
+  forward_pass_kernel(block[1], block[2]);
 }
 
 /**
@@ -523,6 +521,52 @@ void Planner::check_axes_activity() {
   #endif
 }
 
+#if PLANNER_LEVELING
+
+  void Planner::apply_leveling(float &lx, float &ly, float &lz) {
+    #if ENABLED(MESH_BED_LEVELING)
+
+      if (mbl.active())
+        lz += mbl.get_z(RAW_X_POSITION(lx), RAW_Y_POSITION(ly));
+
+    #elif ENABLED(AUTO_BED_LEVELING_LINEAR)
+
+      float dx = RAW_X_POSITION(lx) - (X_TILT_FULCRUM),
+            dy = RAW_Y_POSITION(ly) - (Y_TILT_FULCRUM),
+            dz = RAW_Z_POSITION(lz);
+
+      apply_rotation_xyz(bed_level_matrix, dx, dy, dz);
+
+      lx = LOGICAL_X_POSITION(dx + X_TILT_FULCRUM);
+      ly = LOGICAL_Y_POSITION(dy + Y_TILT_FULCRUM);
+      lz = LOGICAL_Z_POSITION(dz);
+
+    #endif
+  }
+
+  void Planner::unapply_leveling(float &lx, float &ly, float &lz) {
+    #if ENABLED(MESH_BED_LEVELING)
+
+      if (mbl.active())
+        lz -= mbl.get_z(RAW_X_POSITION(lx), RAW_Y_POSITION(ly));
+
+    #elif ENABLED(AUTO_BED_LEVELING_LINEAR)
+
+      matrix_3x3 inverse = matrix_3x3::transpose(bed_level_matrix);
+
+      float dx = lx - (X_TILT_FULCRUM), dy = ly - (Y_TILT_FULCRUM), dz = lz;
+
+      apply_rotation_xyz(inverse, dx, dy, dz);
+
+      lx = LOGICAL_X_POSITION(dx + X_TILT_FULCRUM);
+      ly = LOGICAL_Y_POSITION(dy + Y_TILT_FULCRUM);
+      lz = LOGICAL_Z_POSITION(dz);
+
+    #endif
+  }
+
+#endif // PLANNER_LEVELING
+
 /**
  * Planner::buffer_line
  *
@@ -532,13 +576,7 @@ void Planner::check_axes_activity() {
  *  fr_mm_s   - (target) speed of the move
  *  extruder  - target extruder
  */
-
-#if ENABLED(AUTO_BED_LEVELING_FEATURE) || ENABLED(MESH_BED_LEVELING)
-  void Planner::buffer_line(float x, float y, float z, const float& e, float fr_mm_s, const uint8_t extruder)
-#else
-  void Planner::buffer_line(const float& x, const float& y, const float& z, const float& e, float fr_mm_s, const uint8_t extruder)
-#endif  // AUTO_BED_LEVELING_FEATURE
-{
+void Planner::buffer_line(ARG_X, ARG_Y, ARG_Z, const float &e, float fr_mm_s, const uint8_t extruder) {
   // Calculate the buffer head after we push this byte
   int next_buffer_head = next_block_index(block_buffer_head);
 
@@ -546,20 +584,17 @@ void Planner::check_axes_activity() {
   // Rest here until there is room in the buffer.
   while (block_buffer_tail == next_buffer_head) idle();
 
-  #if ENABLED(MESH_BED_LEVELING)
-    if (mbl.active())
-      z += mbl.get_z(x - home_offset[X_AXIS], y - home_offset[Y_AXIS]);
-  #elif ENABLED(AUTO_BED_LEVELING_FEATURE)
-    apply_rotation_xyz(bed_level_matrix, x, y, z);
+  #if PLANNER_LEVELING
+    apply_leveling(lx, ly, lz);
   #endif
 
   // The target position of the tool in absolute steps
   // Calculate target position in absolute steps
   //this should be done after the wait, because otherwise a M92 code within the gcode disrupts this calculation somehow
   long target[NUM_AXIS] = {
-    lround(x * axis_steps_per_mm[X_AXIS]),
-    lround(y * axis_steps_per_mm[Y_AXIS]),
-    lround(z * axis_steps_per_mm[Z_AXIS]),
+    lround(lx * axis_steps_per_mm[X_AXIS]),
+    lround(ly * axis_steps_per_mm[Y_AXIS]),
+    lround(lz * axis_steps_per_mm[Z_AXIS]),
     lround(e * axis_steps_per_mm[E_AXIS])
   };
 
@@ -569,11 +604,22 @@ void Planner::check_axes_activity() {
 
   /*
   SERIAL_ECHO_START;
-  SERIAL_ECHOPAIR("Planner X:", x);
-  SERIAL_ECHOPAIR(" (", dx);
-  SERIAL_ECHOPAIR(") Y:", y);
+  SERIAL_ECHOPGM("Planner ", x);
+  #if IS_KINEMATIC
+    SERIAL_ECHOPAIR("A:", x);
+    SERIAL_ECHOPAIR(" (", dx);
+    SERIAL_ECHOPAIR(") B:", y);
+  #else
+    SERIAL_ECHOPAIR("X:", x);
+    SERIAL_ECHOPAIR(" (", dx);
+    SERIAL_ECHOPAIR(") Y:", y);
+  #endif
   SERIAL_ECHOPAIR(" (", dy);
-  SERIAL_ECHOPAIR(") Z:", z);
+  #elif ENABLED(DELTA)
+    SERIAL_ECHOPAIR(") C:", z);
+  #else
+    SERIAL_ECHOPAIR(") Z:", z);
+  #endif
   SERIAL_ECHOPAIR(" (", dz);
   SERIAL_ECHOLNPGM(")");
   //*/
@@ -642,7 +688,7 @@ void Planner::check_axes_activity() {
   // For a mixing extruder, get a magnified step_event_count for each
   #if ENABLED(MIXING_EXTRUDER)
     for (uint8_t i = 0; i < MIXING_STEPPERS; i++)
-      block->mix_event_count[i] = (mixing_factor[i] < 0.0001) ? 0 : block->step_event_count / mixing_factor[i];
+      block->mix_event_count[i] = UNEAR_ZERO(mixing_factor[i]) ? 0 : block->step_event_count / mixing_factor[i];
   #endif
 
   #if FAN_COUNT > 0
@@ -870,7 +916,7 @@ void Planner::check_axes_activity() {
     static float filwidth_e_count = 0, filwidth_delay_dist = 0;
 
     //FMM update ring buffer used for delay with filament measurements
-    if (extruder == FILAMENT_SENSOR_EXTRUDER_NUM && filwidth_delay_index2 >= 0) {  //only for extruder with filament sensor and if ring buffer is initialized
+    if (extruder == FILAMENT_SENSOR_EXTRUDER_NUM && filwidth_delay_index[1] >= 0) {  //only for extruder with filament sensor and if ring buffer is initialized
 
       const int MMD_CM = MAX_MEASUREMENT_DELAY + 1, MMD_MM = MMD_CM * 10;
 
@@ -885,16 +931,16 @@ void Planner::check_axes_activity() {
         while (filwidth_delay_dist >= MMD_MM) filwidth_delay_dist -= MMD_MM;
 
         // Convert into an index into the measurement array
-        filwidth_delay_index1 = (int)(filwidth_delay_dist * 0.1 + 0.0001);
+        filwidth_delay_index[0] = (int)(filwidth_delay_dist * 0.1 + 0.0001);
 
         // If the index has changed (must have gone forward)...
-        if (filwidth_delay_index1 != filwidth_delay_index2) {
+        if (filwidth_delay_index[0] != filwidth_delay_index[1]) {
           filwidth_e_count = 0; // Reset the E movement counter
           int8_t meas_sample = thermalManager.widthFil_to_size_ratio() - 100; // Subtract 100 to reduce magnitude - to store in a signed char
           do {
-            filwidth_delay_index2 = (filwidth_delay_index2 + 1) % MMD_CM; // The next unused slot
-            measurement_delay[filwidth_delay_index2] = meas_sample;       // Store the measurement
-          } while (filwidth_delay_index1 != filwidth_delay_index2);       // More slots to fill?
+            filwidth_delay_index[1] = (filwidth_delay_index[1] + 1) % MMD_CM; // The next unused slot
+            measurement_delay[filwidth_delay_index[1]] = meas_sample;         // Store the measurement
+          } while (filwidth_delay_index[0] != filwidth_delay_index[1]);       // More slots to fill?
         }
       }
     }
@@ -1095,7 +1141,7 @@ void Planner::check_axes_activity() {
       block->advance_rate = acc_dist ? advance / (float)acc_dist : 0;
     }
     /**
-      SERIAL_ECHO_START;
+     SERIAL_ECHO_START;
      SERIAL_ECHOPGM("advance :");
      SERIAL_ECHO(block->advance/256.0);
      SERIAL_ECHOPGM("advance rate :");
@@ -1118,61 +1164,26 @@ void Planner::check_axes_activity() {
 
 } // buffer_line()
 
-#if ENABLED(AUTO_BED_LEVELING_FEATURE) && DISABLED(DELTA)
-
-  /**
-   * Get the XYZ position of the steppers as a vector_3.
-   *
-   * On CORE machines XYZ is derived from ABC.
-   */
-  vector_3 Planner::adjusted_position() {
-    vector_3 pos = vector_3(stepper.get_axis_position_mm(X_AXIS), stepper.get_axis_position_mm(Y_AXIS), stepper.get_axis_position_mm(Z_AXIS));
-
-    //pos.debug("in Planner::adjusted_position");
-    //bed_level_matrix.debug("in Planner::adjusted_position");
-
-    matrix_3x3 inverse = matrix_3x3::transpose(bed_level_matrix);
-    //inverse.debug("in Planner::inverse");
-
-    pos.apply_rotation(inverse);
-    //pos.debug("after rotation");
-
-    return pos;
-  }
-
-#endif // AUTO_BED_LEVELING_FEATURE && !DELTA
-
 /**
  * Directly set the planner XYZ position (hence the stepper positions).
  *
  * On CORE machines stepper ABC will be translated from the given XYZ.
  */
-#if ENABLED(AUTO_BED_LEVELING_FEATURE) || ENABLED(MESH_BED_LEVELING)
-  void Planner::set_position_mm(float x, float y, float z, const float& e)
-#else
-  void Planner::set_position_mm(const float& x, const float& y, const float& z, const float& e)
-#endif // AUTO_BED_LEVELING_FEATURE || MESH_BED_LEVELING
-  {
-    #if ENABLED(MESH_BED_LEVELING)
+void Planner::set_position_mm(ARG_X, ARG_Y, ARG_Z, const float &e) {
 
-      if (mbl.active())
-        z += mbl.get_z(RAW_X_POSITION(x), RAW_Y_POSITION(y));
+  #if PLANNER_LEVELING
+    apply_leveling(lx, ly, lz);
+  #endif
 
-    #elif ENABLED(AUTO_BED_LEVELING_FEATURE)
+  long nx = position[X_AXIS] = lround(lx * axis_steps_per_mm[X_AXIS]),
+       ny = position[Y_AXIS] = lround(ly * axis_steps_per_mm[Y_AXIS]),
+       nz = position[Z_AXIS] = lround(lz * axis_steps_per_mm[Z_AXIS]),
+       ne = position[E_AXIS] = lround(e * axis_steps_per_mm[E_AXIS]);
+  stepper.set_position(nx, ny, nz, ne);
+  previous_nominal_speed = 0.0; // Resets planner junction speeds. Assumes start from rest.
 
-      apply_rotation_xyz(bed_level_matrix, x, y, z);
-
-    #endif
-
-    long nx = position[X_AXIS] = lround(x * axis_steps_per_mm[X_AXIS]),
-         ny = position[Y_AXIS] = lround(y * axis_steps_per_mm[Y_AXIS]),
-         nz = position[Z_AXIS] = lround(z * axis_steps_per_mm[Z_AXIS]),
-         ne = position[E_AXIS] = lround(e * axis_steps_per_mm[E_AXIS]);
-    stepper.set_position(nx, ny, nz, ne);
-    previous_nominal_speed = 0.0; // Resets planner junction speeds. Assumes start from rest.
-
-    LOOP_XYZE(i) previous_speed[i] = 0.0;
-  }
+  LOOP_XYZE(i) previous_speed[i] = 0.0;
+}
 
 /**
  * Directly set the planner E position (hence the stepper E position).
@@ -1192,7 +1203,7 @@ void Planner::reset_acceleration_rates() {
 // Recalculate position, steps_to_mm if axis_steps_per_mm changes!
 void Planner::refresh_positioning() {
   LOOP_XYZE(i) steps_to_mm[i] = 1.0 / axis_steps_per_mm[i];
-  #if ENABLED(DELTA) || ENABLED(SCARA)
+  #if IS_KINEMATIC
     inverse_kinematics(current_position);
     set_position_mm(delta[X_AXIS], delta[Y_AXIS], delta[Z_AXIS], current_position[E_AXIS]);
   #else
