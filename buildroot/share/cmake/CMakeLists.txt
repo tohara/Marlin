@@ -96,8 +96,8 @@ setup_motherboard(${PROJECT_NAME} ${CMAKE_CURRENT_LIST_DIR}/../../../Marlin)
 #  Include Marlin.ino to compile libs not included in *.cpp files    #
 #====================================================================#
 
-file(GLOB SOURCES "../../../src/*.cpp")
-set(${PROJECT_NAME}_SRCS "${SOURCES};../../../src/Marlin.ino")
+file(GLOB_RECURSE SOURCES "../../../Marlin/*.cpp")
+set(${PROJECT_NAME}_SRCS "${SOURCES};../../../Marlin/Marlin.ino")
 
 #====================================================================#
 #  Define the port for uploading code to the Arduino                 #
